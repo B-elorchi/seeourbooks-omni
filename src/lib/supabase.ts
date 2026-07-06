@@ -1,10 +1,24 @@
 ﻿import { createClient } from '@supabase/supabase-js';
 
-// Hardcoding for MVP to avoid Vite .env restart issues
-const supabaseUrl = 'http://46.101.218.188:8000';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzgxODAxNTMwLCJleHAiOjE5Mzk0ODE1MzB9.uwvTNKTzfwe5FQ8o_fHSDULeWWomMORdA94GHu1x3nk';
+// Read from the environment (.env / .env.production) instead of hardcoding —
+// a hardcoded http:// URL silently breaks in production: the site is served
+// over https:// on omni.seeourbook.com, and browsers block "mixed content"
+// (an https page calling an http endpoint), so every Supabase call fails.
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log("Supabase URL:", supabaseUrl);
-console.log("Supabase Key:", supabaseAnonKey.substring(0, 15) + "...");
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Set them in .env (see .env.example).'
+  );
+}
+if (import.meta.env.PROD && supabaseUrl.startsWith('http://')) {
+  // Not a hard failure — some self-hosted setups may have a reason — but this
+  // WILL be blocked by the browser as mixed content on an https:// site.
+  console.warn(
+    `Supabase URL is http:// (${supabaseUrl}) — this will be blocked as mixed ` +
+    'content on an https:// deployment. Use an https:// URL for VITE_SUPABASE_URL.'
+  );
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
