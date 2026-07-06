@@ -27,7 +27,6 @@ export default function LoginPage() {
       if (error) throw error;
       
       if (data.session) {
-        localStorage.setItem('omni_token', data.session.access_token);
         navigate('/dashboard');
       }
     } catch (err: any) {

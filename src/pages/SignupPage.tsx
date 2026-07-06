@@ -27,7 +27,6 @@ export default function SignupPage() {
       if (error) throw error;
       
       if (data.session) {
-        localStorage.setItem('omni_token', data.session.access_token);
         navigate('/dashboard');
       } else {
         alert(t('signup_page.check_email'));
