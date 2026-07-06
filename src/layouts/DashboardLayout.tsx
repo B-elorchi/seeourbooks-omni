@@ -73,8 +73,7 @@ export default function DashboardLayout() {
       {/* Sidebar — off-canvas drawer on mobile, static on md+ */}
       <aside
         className={`w-64 bg-white border-e border-gray-200 flex flex-col fixed h-full z-50 transition-transform duration-300 ease-out
-          ${sidebarOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'}
-          md:translate-x-0`}
+          ${sidebarOpen ? 'translate-x-0' : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'}`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
           <div className="flex items-center min-w-0">
