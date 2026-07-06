@@ -114,7 +114,7 @@ export default function ProcessingPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium transition-colors ${
+                    className={`flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 sm:py-4 px-1 text-xs sm:text-sm font-medium text-center transition-colors ${
                       isActive
                         ? 'text-black border-b-2 border-black bg-gray-50/50'
                         : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
@@ -128,9 +128,9 @@ export default function ProcessingPage() {
             </div>
 
             {/* Content */}
-            <div className="p-8">
+            <div className="p-4 sm:p-8">
               {activeTab === 'upload' && (
-                <div className="border-2 border-dashed border-gray-200 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:bg-gray-50 hover:border-gray-300 transition-colors">
+                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 sm:p-12 flex flex-col items-center justify-center text-center hover:bg-gray-50 hover:border-gray-300 transition-colors">
                   <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
                     <FileText size={32} />
                   </div>
@@ -151,7 +151,7 @@ export default function ProcessingPage() {
               {activeTab === 'library' && (
                 <div className="space-y-4">
                   <p className="text-sm text-gray-600 mb-4">{t('processing.library_desc')}</p>
-                    <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto pr-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto pr-2">
                       {catalogData.books.map((book: any) => {
                         const bookIdStr = book.gutenberg_id.toString();
                         return (

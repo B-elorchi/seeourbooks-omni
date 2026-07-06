@@ -78,16 +78,19 @@ export default function LibraryPage() {
               className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
             >
               <div className={`h-48 ${bgGradient} relative flex items-center justify-center p-6 overflow-hidden`}>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 z-10 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 gap-2">
+                {/* On touch devices (no real hover) these stay visible; on sm+
+                    pointer devices they reveal on hover, matching the original
+                    "hover to reveal" desktop interaction. */}
+                <div className="absolute inset-0 bg-black/20 sm:bg-black/0 sm:group-hover:bg-black/40 transition-colors duration-300 z-10 flex flex-col items-center justify-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
                   <button
                     onClick={() => navigate('/process', { state: { prefillBookId: String(book.gutenberg_id) } })}
-                    className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full font-semibold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                    className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-full font-semibold sm:transform sm:translate-y-4 sm:group-hover:translate-y-0 transition-all duration-300"
                   >
                     <Wand2 size={16} /> {t('library.process_book')}
                   </button>
                   <button
                     onClick={(e) => handleReadBook(book, e)}
-                    className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-full font-semibold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75 border border-white/20"
+                    className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-full font-semibold sm:transform sm:translate-y-4 sm:group-hover:translate-y-0 transition-all duration-300 sm:delay-75 border border-white/20"
                   >
                     <BookUp size={16} /> {t('library.read_book')}
                   </button>
