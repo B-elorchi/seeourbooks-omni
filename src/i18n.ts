@@ -118,7 +118,8 @@ const resources = {
         "filter_catalog": "Catalog",
         "empty_title": "No books found",
         "empty_desc": "You haven't generated any content for this category yet.",
-        "unknown_title": "Unknown Title"
+        "unknown_title": "Unknown Title",
+        "asset_unavailable": "This item hasn't finished generating yet."
       },
 
       "library": {
@@ -271,7 +272,8 @@ const resources = {
         "filter_catalog": "الفهرس",
         "empty_title": "لا توجد كتب",
         "empty_desc": "لم تقم بتوليد أي محتوى لهذه الفئة بعد.",
-        "unknown_title": "عنوان غير معروف"
+        "unknown_title": "عنوان غير معروف",
+        "asset_unavailable": "لم يتم الانتهاء من توليد هذا العنصر بعد."
       },
 
       "library": {
