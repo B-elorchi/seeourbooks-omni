@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Upload, Book, Video, Wand2, FileText, LayoutDashboard, Loader2, Clock } from 'lucide-react';
 import { pipelineApi } from '../lib/api';
 import { calculateEstimatedTime } from '../lib/utils';
@@ -7,9 +8,10 @@ import ProgressTracker from '../components/ui/ProgressTracker';
 import catalogData from '../data/rank_101_200.json';
 
 export default function ProcessingPage() {
+  const { t } = useTranslation();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'upload' | 'library' | 'youtube'>('upload');
-  
+
   // Pipeline Options
   const [options, setOptions] = useState({
     audio_full: true,
@@ -50,12 +52,12 @@ export default function ProcessingPage() {
       const pages = selectedBook?.page_count || 200;
       return calculateEstimatedTime(pages, steps);
     } else if (activeTab === 'upload') {
-      const pages = file ? Math.max(1, Math.round(file.size / 1024 / 2)) : 50; 
+      const pages = file ? Math.max(1, Math.round(file.size / 1024 / 2)) : 50;
       return calculateEstimatedTime(pages, steps);
     } else if (activeTab === 'youtube') {
-      return calculateEstimatedTime(30, steps); 
+      return calculateEstimatedTime(30, steps);
     }
-    return '~5 mins';
+    return t('processing.default_estimate');
   };
 
   const handleStart = async () => {
@@ -64,38 +66,38 @@ export default function ProcessingPage() {
     try {
       const steps = getSelectedSteps();
       let res;
-      
+
       if (activeTab === 'upload') {
-        if (!file) return alert("Please select a file first.");
+        if (!file) return alert(t('processing.alert_select_file'));
         res = await pipelineApi.uploadDocument(file, steps);
       } else if (activeTab === 'library') {
         res = await pipelineApi.startLibraryJob(selectedBookId, steps);
       } else if (activeTab === 'youtube') {
-        if (!youtubeUrl) return alert("Please enter a YouTube URL.");
+        if (!youtubeUrl) return alert(t('processing.alert_enter_youtube'));
         res = await pipelineApi.processYouTube(youtubeUrl, steps);
       }
-      
+
       if (res && res.job_id) {
         setJobId(res.job_id);
       }
     } catch (err: any) {
-      alert("Error starting pipeline: " + (err.response?.data?.detail || err.message));
+      alert(t('processing.error_starting') + (err.response?.data?.detail || err.message));
     } finally {
       setIsStarting(false);
     }
   };
 
   const tabs = [
-    { id: 'upload', label: 'Upload File', icon: Upload },
-    { id: 'library', label: 'Server Library', icon: Book },
-    { id: 'youtube', label: 'YouTube URL', icon: Video },
+    { id: 'upload', label: t('processing.tab_upload'), icon: Upload },
+    { id: 'library', label: t('processing.tab_library'), icon: Book },
+    { id: 'youtube', label: t('processing.tab_youtube'), icon: Video },
   ] as const;
 
   return (
     <div className="w-full">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Start AI Processing</h1>
-        <p className="text-gray-500 mt-1">Choose an input method to generate summaries, audio, and mind maps.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('processing.title')}</h1>
+        <p className="text-gray-500 mt-1">{t('processing.subtitle')}</p>
       </div>
 
       {jobId ? (
@@ -113,8 +115,8 @@ export default function ProcessingPage() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 flex items-center justify-center gap-2 py-4 text-sm font-medium transition-colors ${
-                      isActive 
-                        ? 'text-black border-b-2 border-black bg-gray-50/50' 
+                      isActive
+                        ? 'text-black border-b-2 border-black bg-gray-50/50'
                         : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
@@ -132,13 +134,13 @@ export default function ProcessingPage() {
                   <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
                     <FileText size={32} />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">Upload your document</h3>
-                  <p className="text-sm text-gray-500 mb-6">Supports PDF, EPUB, and TXT up to 50MB</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{t('processing.upload_title')}</h3>
+                  <p className="text-sm text-gray-500 mb-6">{t('processing.upload_desc')}</p>
                   <label className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer">
-                    Browse Files
-                    <input 
-                      type="file" 
-                      className="hidden" 
+                    {t('processing.browse_files')}
+                    <input
+                      type="file"
+                      className="hidden"
                       onChange={(e) => e.target.files && setFile(e.target.files[0])}
                     />
                   </label>
@@ -148,13 +150,13 @@ export default function ProcessingPage() {
 
               {activeTab === 'library' && (
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-600 mb-4">Select a book from our pre-hosted server library.</p>
+                  <p className="text-sm text-gray-600 mb-4">{t('processing.library_desc')}</p>
                     <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto pr-2">
                       {catalogData.books.map((book: any) => {
                         const bookIdStr = book.gutenberg_id.toString();
                         return (
-                          <div 
-                            key={bookIdStr} 
+                          <div
+                            key={bookIdStr}
                             onClick={() => setSelectedBookId(bookIdStr)}
                             className={`border rounded-xl p-4 flex gap-4 cursor-pointer transition-colors ${selectedBookId === bookIdStr ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-300'}`}
                           >
@@ -162,7 +164,7 @@ export default function ProcessingPage() {
                             <div>
                               <h4 className="font-bold text-gray-900 text-sm line-clamp-2" title={book.title}>{book.title}</h4>
                               <p className="text-xs text-gray-500 mt-1 line-clamp-1">{book.author}</p>
-                              <p className="text-xs text-gray-400 mt-1">ID: {bookIdStr}</p>
+                              <p className="text-xs text-gray-400 mt-1">{t('processing.id_label')}: {bookIdStr}</p>
                             </div>
                           </div>
                         );
@@ -173,11 +175,11 @@ export default function ProcessingPage() {
 
               {activeTab === 'youtube' && (
                 <div className="space-y-4">
-                  <p className="text-sm text-gray-600 mb-4">Paste a YouTube video URL to extract the transcript and process it.</p>
+                  <p className="text-sm text-gray-600 mb-4">{t('processing.youtube_desc')}</p>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
-                    <input 
-                      type="url" 
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('processing.youtube_url_label')}</label>
+                    <input
+                      type="url"
                       value={youtubeUrl}
                       onChange={(e) => setYoutubeUrl(e.target.value)}
                       placeholder="https://youtube.com/watch?v=..."
@@ -188,81 +190,81 @@ export default function ProcessingPage() {
               )}
             </div>
           </div>
-          
+
           {/* Configuration Options */}
           <div className="mt-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
               <LayoutDashboard size={18} />
-              Pipeline Options
+              {t('processing.options_title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  checked={options.audio_full} 
+                <input
+                  type="checkbox"
+                  checked={options.audio_full}
                   onChange={(e) => setOptions({...options, audio_full: e.target.checked})}
-                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black" 
+                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                 />
                 <div className="text-sm">
-                  <p className="font-medium text-gray-900">Generate Audio</p>
-                  <p className="text-gray-500 text-xs">Create studio-quality narration</p>
+                  <p className="font-medium text-gray-900">{t('processing.opt_audio_title')}</p>
+                  <p className="text-gray-500 text-xs">{t('processing.opt_audio_desc')}</p>
                 </div>
               </label>
               <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  checked={options.translate_ar} 
+                <input
+                  type="checkbox"
+                  checked={options.translate_ar}
                   onChange={(e) => setOptions({...options, translate_ar: e.target.checked})}
-                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black" 
+                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                 />
                 <div className="text-sm">
-                  <p className="font-medium text-gray-900">Arabic Translation</p>
-                  <p className="text-gray-500 text-xs">Translate outputs to Arabic</p>
+                  <p className="font-medium text-gray-900">{t('processing.opt_translate_title')}</p>
+                  <p className="text-gray-500 text-xs">{t('processing.opt_translate_desc')}</p>
                 </div>
               </label>
               <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  checked={options.mindmap} 
+                <input
+                  type="checkbox"
+                  checked={options.mindmap}
                   onChange={(e) => setOptions({...options, mindmap: e.target.checked})}
-                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black" 
+                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                 />
                 <div className="text-sm">
-                  <p className="font-medium text-gray-900">Generate Mind Map</p>
-                  <p className="text-gray-500 text-xs">Create visual representations</p>
+                  <p className="font-medium text-gray-900">{t('processing.opt_mindmap_title')}</p>
+                  <p className="text-gray-500 text-xs">{t('processing.opt_mindmap_desc')}</p>
                 </div>
               </label>
               <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  checked={options.epub} 
+                <input
+                  type="checkbox"
+                  checked={options.epub}
                   onChange={(e) => setOptions({...options, epub: e.target.checked})}
-                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black" 
+                  className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                 />
                 <div className="text-sm">
-                  <p className="font-medium text-gray-900">Generate EPUB</p>
-                  <p className="text-gray-500 text-xs">Create downloadable e-book</p>
+                  <p className="font-medium text-gray-900">{t('processing.opt_epub_title')}</p>
+                  <p className="text-gray-500 text-xs">{t('processing.opt_epub_desc')}</p>
                 </div>
               </label>
             </div>
-            
+
             <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between bg-gray-50 p-6 rounded-2xl border border-gray-100 gap-4">
               <div className="flex items-center gap-3">
                 <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-200 text-gray-500">
                   <Clock size={20} />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">Estimated Time</p>
+                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{t('processing.estimated_time')}</p>
                   <p className="text-gray-900 font-bold text-lg">{getEstimatedTime()}</p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={handleStart}
                 disabled={isStarting}
                 className="flex items-center justify-center gap-2 bg-black text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors shadow-lg disabled:opacity-50 w-full sm:w-auto"
               >
                 {isStarting ? <Loader2 className="animate-spin" size={18} /> : <Wand2 size={18} />}
-                {isStarting ? 'Starting...' : 'Start AI Pipeline'}
+                {isStarting ? t('processing.starting') : t('processing.start_pipeline')}
               </button>
             </div>
           </div>

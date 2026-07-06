@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 // epubjs is framework-agnostic; we mount it into a div ref.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - epubjs ships incomplete types
@@ -11,6 +12,7 @@ interface TocItem {
 }
 
 export default function EpubReaderModal({ url, title, onClose }: { url: string; title: string; onClose: () => void }) {
+  const { t } = useTranslation()
   const viewerRef = useRef<HTMLDivElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renditionRef = useRef<any>(null)
@@ -91,7 +93,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
           // eslint-disable-next-line no-console
           console.error('epubjs display() failed:', e)
           if (!cancelled) {
-            setError(e instanceof Error ? e.message : 'Failed to render EPUB')
+            setError(e instanceof Error ? e.message : t('epub_reader.load_error'))
             setLoading(false)
           }
         })
@@ -122,7 +124,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
         safety = setTimeout(() => { if (!cancelled) setLoading(false) }, 6000)
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : 'Could not open EPUB')
+          setError(e instanceof Error ? e.message : t('epub_reader.load_error'))
           setLoading(false)
         }
       }
@@ -138,6 +140,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
       try { renditionRef.current?.destroy() } catch { /* ignore */ }
       try { bookRef.current?.destroy() } catch { /* ignore */ }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable; re-running this effect on language change would restart the whole EPUB render
   }, [url])
 
   // Keyboard navigation
@@ -178,7 +181,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
         <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => setShowToc(v => !v)}
-            title="Toggle contents"
+            title={t('epub_reader.toggle_contents')}
             className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -189,10 +192,10 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <a href={url} target="_blank" rel="noreferrer"
-            className="text-xs text-blue-600 hover:underline px-2">Download ↗</a>
+            className="text-xs text-blue-600 hover:underline px-2">{t('epub_reader.download')} ↗</a>
           <button
             onClick={onClose}
-            title="Close (Esc)"
+            title={t('epub_reader.close')}
             className="p-1.5 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-600 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -207,10 +210,10 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
         {/* ToC sidebar */}
         {showToc && (
           <div className="w-72 shrink-0 bg-gray-50 border-r border-gray-200 overflow-auto py-2">
-            <p className="px-3 py-1 text-[11px] uppercase tracking-wide text-gray-400 font-medium">Contents</p>
+            <p className="px-3 py-1 text-[11px] uppercase tracking-wide text-gray-400 font-medium">{t('epub_reader.contents')}</p>
             {toc.length > 0
               ? renderTocItems(toc)
-              : <p className="px-3 py-2 text-xs text-gray-500">No contents</p>}
+              : <p className="px-3 py-2 text-xs text-gray-500">{t('epub_reader.no_contents')}</p>}
           </div>
         )}
 
@@ -223,10 +226,10 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
           )}
           {error && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-10 p-6 text-center">
-              <p className="text-sm text-red-600 mb-2">Could not load EPUB preview</p>
+              <p className="text-sm text-red-600 mb-2">{t('epub_reader.load_error')}</p>
               <p className="text-xs text-gray-500 mb-4">{error}</p>
               <a href={url} target="_blank" rel="noreferrer"
-                className="text-sm text-indigo-600 hover:underline">Download the file instead ↗</a>
+                className="text-sm text-indigo-600 hover:underline">{t('epub_reader.download_instead')} ↗</a>
             </div>
           )}
           <div ref={viewerRef} className="w-full h-full" />
@@ -235,7 +238,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
           <button
             onClick={() => renditionRef.current?.prev()}
             className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-black/5 transition-colors"
-            title="Previous (←)"
+            title={t('epub_reader.previous')}
           >
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -244,7 +247,7 @@ export default function EpubReaderModal({ url, title, onClose }: { url: string; 
           <button
             onClick={() => renditionRef.current?.next()}
             className="absolute right-0 top-0 bottom-0 w-12 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-black/5 transition-colors"
-            title="Next (→)"
+            title={t('epub_reader.next')}
           >
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

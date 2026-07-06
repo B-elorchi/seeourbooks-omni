@@ -31,7 +31,7 @@ export default function LoginPage() {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to login');
+      setError(err.message || t('login_page.error_default'));
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('login')}</h1>
-          <p className="text-sm text-gray-500">Welcome back to Omni Portal</p>
+          <p className="text-sm text-gray-500">{t('login_page.subtitle')}</p>
         </div>
 
         {error && (
@@ -53,9 +53,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input 
-              type="email" 
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('common.email')}</label>
+            <input
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -64,7 +64,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('common.password')}</label>
             <input 
               type="password" 
               required
@@ -85,7 +85,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Don't have an account?{' '}
+          {t('login_page.no_account')}{' '}
           <Link to="/signup" className="font-medium text-black hover:underline">{t('signup')}</Link>
         </p>
       </div>

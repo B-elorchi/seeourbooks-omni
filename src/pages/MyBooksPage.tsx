@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { pipelineApi } from '../lib/api';
 import { Book, Play, Video, Wand2, Loader2, Map, Clock } from 'lucide-react';
 import EpubReaderModal from '../components/EpubReaderModal';
@@ -7,12 +8,20 @@ import catalogDataRaw from '../data/rank_101_200.json';
 import { calculateEstimatedTimeMs } from '../lib/utils';
 
 export default function MyBooksPage() {
+  const { t } = useTranslation();
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'youtube' | 'upload' | 'catalog'>('all');
   const [readingEpubUrl, setReadingEpubUrl] = useState<string | null>(null);
   const [readingTitle] = useState<string>('');
   const navigate = useNavigate();
+
+  const filterLabels: Record<typeof filter, string> = {
+    all: t('mybooks.filter_all'),
+    youtube: t('mybooks.filter_youtube'),
+    upload: t('mybooks.filter_upload'),
+    catalog: t('mybooks.filter_catalog'),
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -40,8 +49,8 @@ export default function MyBooksPage() {
   return (
     <div className="pb-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Books</h1>
-        <p className="text-gray-500 mt-1">Your generated summaries, audiobooks, and mindmaps.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('mybooks.title')}</h1>
+        <p className="text-gray-500 mt-1">{t('mybooks.subtitle')}</p>
       </div>
 
       {/* Filters */}
@@ -51,12 +60,12 @@ export default function MyBooksPage() {
             key={f}
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === f 
-                ? 'bg-black text-white' 
+              filter === f
+                ? 'bg-black text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {filterLabels[f]}
           </button>
         ))}
       </div>
@@ -68,10 +77,10 @@ export default function MyBooksPage() {
       ) : filteredJobs.length === 0 ? (
         <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
           <Wand2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No books found</h3>
-          <p className="mt-1 text-gray-500">You haven't generated any content for this category yet.</p>
+          <h3 className="text-lg font-medium text-gray-900">{t('mybooks.empty_title')}</h3>
+          <p className="mt-1 text-gray-500">{t('mybooks.empty_desc')}</p>
           <button onClick={() => navigate('/process')} className="mt-6 px-6 py-2.5 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors">
-            Start Processing
+            {t('common.start_processing')}
           </button>
         </div>
       ) : (
@@ -80,9 +89,9 @@ export default function MyBooksPage() {
             const bookId = job.book_id || job.input?.book_id;
             const catalogData = catalogDataRaw as { books: any[] };
             const catalogBook = bookId ? catalogData.books.find((b: any) => String(b.gutenberg_id) === String(bookId)) : null;
-            const title = job.metadata?.title || catalogBook?.title || 'Unknown Title';
+            const title = job.metadata?.title || catalogBook?.title || t('mybooks.unknown_title');
             const isRunning = ['queued', 'running'].includes(job.status);
-            
+
             let estTimeStr = '';
             if (isRunning && job.input?.steps) {
               const pages = job.input.pages || catalogBook?.page_count || 200;
@@ -122,19 +131,19 @@ export default function MyBooksPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex-1 mt-4 border-t border-gray-100 pt-4">
                 {/* Check for outputs */}
                 <div className="flex flex-wrap gap-2">
                   {isRunning && (
                     <div className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-gray-50 text-gray-600 rounded-lg text-xs font-semibold border border-gray-200">
-                      <Loader2 className="animate-spin" size={14} /> In Progress
+                      <Loader2 className="animate-spin" size={14} /> {t('common.in_progress')}
                     </div>
                   )}
-                  
+
                   {job.status === 'failed' && (
                     <div className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-red-50 text-red-600 rounded-lg text-xs font-semibold border border-red-100">
-                       Failed
+                       {t('common.failed')}
                     </div>
                   )}
 
@@ -142,22 +151,22 @@ export default function MyBooksPage() {
                     <>
                       {(!job.input?.steps || job.input.steps.length === 0 || job.input.steps.includes('summarize')) && (
                         <button className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs font-semibold border border-blue-100">
-                          <Book size={14} /> Summary
+                          <Book size={14} /> {t('common.summary')}
                         </button>
                       )}
                       {job.input?.steps?.includes('audio_full') && (
                         <button className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors text-xs font-semibold border border-purple-100">
-                          <Play size={14} fill="currentColor" /> Audio
+                          <Play size={14} fill="currentColor" /> {t('common.audio')}
                         </button>
                       )}
                       {job.input?.steps?.includes('mindmap') && (
                         <button className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors text-xs font-semibold border border-green-100">
-                          <Map size={14} /> Mindmap
+                          <Map size={14} /> {t('common.mindmap')}
                         </button>
                       )}
                       {job.input?.steps?.includes('inject_epub') && (
                         <button className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors text-xs font-semibold border border-orange-100">
-                          <Book size={14} /> EPUB
+                          <Book size={14} /> {t('common.epub')}
                         </button>
                       )}
                     </>

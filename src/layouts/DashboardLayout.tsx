@@ -35,8 +35,8 @@ export default function DashboardLayout() {
   const navItems = [
     { name: t('dashboard'), path: '/dashboard', icon: LayoutDashboard },
     { name: t('ai_process'), path: '/process', icon: Wand2 },
-    { name: 'Server Catalog', path: '/library', icon: Library },
-    { name: 'My Books', path: '/my-books', icon: BookOpen },
+    { name: t('nav.server_catalog'), path: '/library', icon: Library },
+    { name: t('nav.my_books'), path: '/my-books', icon: BookOpen },
   ];
 
   return (
@@ -44,9 +44,7 @@ export default function DashboardLayout() {
       {/* Sidebar */}
       <aside className="w-64 bg-white border-e border-gray-200 flex flex-col fixed h-full z-10">
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
-          <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center me-3">
-            <span className="text-white font-bold text-xl">S</span>
-          </div>
+          <img src="/See-Our-Book.svg" alt="SeeOurBook" className="w-8 h-8 rounded-md object-contain me-3" />
           <span className="font-bold text-lg tracking-tight">Omni Portal</span>
         </div>
         

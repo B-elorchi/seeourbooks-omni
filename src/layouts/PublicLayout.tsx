@@ -14,9 +14,7 @@ export default function PublicLayout() {
       <header className="border-b border-gray-100 bg-white/80 backdrop-blur-md fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
-              <span className="text-white font-bold text-xl">S</span>
-            </div>
+            <img src="/See-Our-Book.svg" alt="SeeOurBook" className="w-8 h-8 rounded-md object-contain" />
             <span className="font-bold text-xl tracking-tight">SeeOurBook</span>
           </div>
           <nav className="flex gap-4 items-center">

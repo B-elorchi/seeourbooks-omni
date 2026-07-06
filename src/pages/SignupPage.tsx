@@ -30,11 +30,11 @@ export default function SignupPage() {
         localStorage.setItem('omni_token', data.session.access_token);
         navigate('/dashboard');
       } else {
-        alert('Check your email for the confirmation link!');
+        alert(t('signup_page.check_email'));
         navigate('/login');
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to sign up');
+      setError(err.message || t('signup_page.error_default'));
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('signup')}</h1>
-          <p className="text-sm text-gray-500">Create your Omni Portal account</p>
+          <p className="text-sm text-gray-500">{t('signup_page.subtitle')}</p>
         </div>
 
         {error && (
@@ -56,9 +56,9 @@ export default function SignupPage() {
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input 
-              type="email" 
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('common.email')}</label>
+            <input
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -67,7 +67,7 @@ export default function SignupPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('common.password')}</label>
             <input 
               type="password" 
               required
@@ -89,7 +89,7 @@ export default function SignupPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Already have an account?{' '}
+          {t('signup_page.have_account')}{' '}
           <Link to="/login" className="font-medium text-black hover:underline">{t('login')}</Link>
         </p>
       </div>

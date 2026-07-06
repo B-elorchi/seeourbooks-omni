@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { pipelineApi, type JobStatus } from '../../lib/api';
 import { CheckCircle2, Circle, Loader2, XCircle } from 'lucide-react';
 
@@ -8,6 +9,7 @@ interface ProgressTrackerProps {
 }
 
 export default function ProgressTracker({ jobId, onComplete }: ProgressTrackerProps) {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<JobStatus | null>(null);
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function ProgressTracker({ jobId, onComplete }: ProgressTrackerPr
   }, [jobId, onComplete]);
 
   if (!status) {
-    return <div className="flex items-center gap-2 text-gray-500"><Loader2 className="animate-spin" size={18} /> Initializing...</div>;
+    return <div className="flex items-center gap-2 text-gray-500"><Loader2 className="animate-spin" size={18} /> {t('progress.initializing')}</div>;
   }
 
   const isTerminal = ['done', 'failed', 'partial', 'cancelled'].includes(status.status);
@@ -56,8 +58,8 @@ export default function ProgressTracker({ jobId, onComplete }: ProgressTrackerPr
     <div className="bg-gray-50 border border-gray-200 p-6 rounded-2xl w-full">
       <div className="flex justify-between items-end mb-4">
         <div>
-          <h3 className="font-bold text-gray-900">AI Generation in Progress</h3>
-          <p className="text-sm text-gray-500 capitalize">{status.status} • {status.current_step || 'Starting'}</p>
+          <h3 className="font-bold text-gray-900">{t('progress.title')}</h3>
+          <p className="text-sm text-gray-500 capitalize">{status.status} • {status.current_step || t('progress.starting_step')}</p>
         </div>
         <span className="text-2xl font-black text-black">{Math.round(percentage)}%</span>
       </div>
@@ -100,7 +102,7 @@ export default function ProgressTracker({ jobId, onComplete }: ProgressTrackerPr
 
       {isTerminal && (
         <div className={`mt-6 p-4 rounded-xl text-sm font-medium ${status.status === 'done' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
-          {status.status === 'done' ? 'Generation completed successfully! You can now view it in your Library.' : `Job ended with status: ${status.status}. ${status.error || ''}`}
+          {status.status === 'done' ? t('progress.completed') : `${t('progress.ended_with_status')} ${status.status}. ${status.error || ''}`}
         </div>
       )}
     </div>
