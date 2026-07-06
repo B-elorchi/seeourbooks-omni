@@ -39,12 +39,24 @@ const resources = {
         "title_line2": "Learn More.",
         "subtitle": "Transform any book, PDF, or video into a comprehensive learning experience with bilingual summaries, full audio, and interactive mind maps in seconds.",
         "cta": "Start your free trial",
+        "no_cc": "No credit card required",
+        "mock_summary_title": "Atomic Habits — Summary",
+        "mock_summary_line1": "Small, consistent changes compound into",
+        "mock_summary_line2": "remarkable results over time...",
+        "mock_audio_label": "Full audiobook",
+        "mock_mindmap_label": "Mind map",
+        "mock_status": "Ready",
         "feature1_title": "Smart Summaries",
         "feature1_desc": "Get to the core ideas of any book instantly. Available in both English and Arabic.",
         "feature2_title": "Immersive Audio",
         "feature2_desc": "Listen on the go with studio-quality AI voices generating full book audio.",
         "feature3_title": "Video Extraction",
-        "feature3_desc": "Paste any video URL and we'll extract the transcript and process it into a learning guide."
+        "feature3_desc": "Paste any video URL and we'll extract the transcript and process it into a learning guide.",
+        "final_cta_title": "Ready to read less and learn more?",
+        "final_cta_subtitle": "Join Omni Portal and turn your next book into a summary, an audiobook, and a mind map — all at once.",
+        "final_cta_button": "Get started for free",
+        "footer_tagline": "Turning books into knowledge you can hear, see, and skim.",
+        "footer_rights": "All rights reserved."
       },
 
       "login_page": {
@@ -193,12 +205,24 @@ const resources = {
         "title_line2": "تعلّم أكثر.",
         "subtitle": "حوّل أي كتاب أو PDF أو فيديو إلى تجربة تعلّم متكاملة بملخصات ثنائية اللغة، صوت كامل، وخرائط ذهنية تفاعلية في ثوانٍ.",
         "cta": "ابدأ تجربتك المجانية",
+        "no_cc": "بدون الحاجة لبطاقة ائتمان",
+        "mock_summary_title": "ملخص — Atomic Habits",
+        "mock_summary_line1": "التغييرات الصغيرة والمستمرة تتراكم لتحقق",
+        "mock_summary_line2": "نتائج مذهلة مع مرور الوقت...",
+        "mock_audio_label": "الكتاب الصوتي كاملاً",
+        "mock_mindmap_label": "خريطة ذهنية",
+        "mock_status": "جاهز",
         "feature1_title": "ملخصات ذكية",
         "feature1_desc": "احصل على جوهر أي كتاب فورًا. متوفر باللغتين العربية والإنجليزية.",
         "feature2_title": "صوت غامر",
         "feature2_desc": "استمع أثناء تنقلك بأصوات ذكاء اصطناعي بجودة استوديو تروي الكتاب كاملاً.",
         "feature3_title": "استخراج من الفيديو",
-        "feature3_desc": "الصق رابط أي فيديو وسنستخرج النص الصوتي ونحوّله إلى دليل تعلّمي."
+        "feature3_desc": "الصق رابط أي فيديو وسنستخرج النص الصوتي ونحوّله إلى دليل تعلّمي.",
+        "final_cta_title": "مستعد لتقرأ أقل وتتعلّم أكثر؟",
+        "final_cta_subtitle": "انضم إلى منصة Omni وحوّل كتابك القادم إلى ملخص، وكتاب صوتي، وخريطة ذهنية، كل ذلك دفعة واحدة.",
+        "final_cta_button": "ابدأ مجانًا الآن",
+        "footer_tagline": "نحوّل الكتب إلى معرفة يمكنك سماعها ورؤيتها وتصفّحها.",
+        "footer_rights": "جميع الحقوق محفوظة."
       },
 
       "login_page": {
