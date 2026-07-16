@@ -1,8 +1,7 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,14 +18,26 @@ export default function LoginPage() {
     setError(null);
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Authenticate directly against the WordPress site
+      const wpUrl = import.meta.env.VITE_WP_API_URL || 'https://boutaina.elorchi.com';
+      const res = await fetch(`${wpUrl}/wp-json/jwt-auth/v1/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password }),
       });
-
-      if (error) throw error;
       
-      if (data.session) {
+      const data = await res.json();
+      
+      if (!res.ok) {
+        // Handle WordPress auth error format (e.g. invalid username/password)
+        const errorMessage = data.message ? data.message.replace(/<[^>]+>/g, '') : t('login_page.error_default');
+        throw new Error(errorMessage);
+      }
+      
+      if (data.token) {
+        localStorage.setItem('wp_token', data.token);
+        localStorage.setItem('wp_user_email', data.user_email || email);
+        localStorage.setItem('wp_user_display_name', data.user_display_name || '');
         navigate('/dashboard');
       }
     } catch (err: any) {

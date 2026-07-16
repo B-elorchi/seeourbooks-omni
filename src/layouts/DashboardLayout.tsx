@@ -2,7 +2,6 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Wand2, Library, LogOut, Globe, BookOpen, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 
 export default function DashboardLayout() {
@@ -13,14 +12,19 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
+    // Check if token exists
+    const token = localStorage.getItem('wp_token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Set user from localStorage
+    setUser({
+      email: localStorage.getItem('wp_user_email') || '',
+      displayName: localStorage.getItem('wp_user_display_name') || ''
     });
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => setUser(session?.user ?? null)
-    );
-    return () => authListener.subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   // Close the mobile drawer on every navigation.
   useEffect(() => {
@@ -29,7 +33,9 @@ export default function DashboardLayout() {
 
   const handleLogout = async (e: any) => {
     e.preventDefault();
-    await supabase.auth.signOut();
+    localStorage.removeItem('wp_token');
+    localStorage.removeItem('wp_user_email');
+    localStorage.removeItem('wp_user_display_name');
     navigate('/login');
   };
 

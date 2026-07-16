@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { supabase } from './supabase';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8080/api';
 
@@ -7,15 +6,9 @@ export const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Attach the CURRENT Supabase access token to every request. Reading it live
-// via getSession() (instead of a token snapshotted into localStorage at
-// login time) means requests keep working after Supabase's background
-// auto-refresh rotates the token — a stale captured token would otherwise
-// start failing every backend call ~1 hour after login even though the
-// user is still actually signed in.
+// Attach the CURRENT WordPress access token to every request.
 apiClient.interceptors.request.use(async (config) => {
-  const { data } = await supabase.auth.getSession();
-  const token = data.session?.access_token;
+  const token = localStorage.getItem('wp_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
