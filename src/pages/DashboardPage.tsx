@@ -2,15 +2,14 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Wand2, Library, Clock, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
+    setUser({
+      email: localStorage.getItem('wp_user_email') || ''
     });
   }, []);
 

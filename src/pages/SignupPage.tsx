@@ -1,8 +1,7 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -15,28 +14,8 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-      
-      if (data.session) {
-        navigate('/dashboard');
-      } else {
-        alert(t('signup_page.check_email'));
-        navigate('/login');
-      }
-    } catch (err: any) {
-      setError(err.message || t('signup_page.error_default'));
-    } finally {
-      setLoading(false);
-    }
+    const wpUrl = import.meta.env.VITE_WP_API_URL || 'https://boutaina.elorchi.com';
+    window.location.href = `${wpUrl}/wp-login.php?action=register`;
   };
 
   return (
