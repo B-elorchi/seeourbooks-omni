@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  pipelineApi, parseJobResult, pickSummary, pickAudio, pickMindmap, pickEpub,
+  pipelineApi, parseJobResult, pickAudio, pickMindmap, pickEpub,
   type PipelineJob, type PipelineResult,
 } from '../lib/api';
 import { Book, Play, Video, Wand2, Loader2, Map, Clock, X } from 'lucide-react';
