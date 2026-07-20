@@ -17,7 +17,7 @@ export default function MyBooksPage() {
   const [filter, setFilter] = useState<'all' | 'youtube' | 'upload' | 'catalog'>('all');
   const [readingEpubUrl, setReadingEpubUrl] = useState<string | null>(null);
   const [readingTitle, setReadingTitle] = useState<string>('');
-  const [summaryModal, setSummaryModal] = useState<{ title: string; text: string } | null>(null);
+  const [summaryModal, setSummaryModal] = useState<{ title: string; summaries: { lang: string; text: string }[]; activeLang: string; } | null>(null);
   const [playingAudio, setPlayingAudio] = useState<{ jobId: string; url: string } | null>(null);
   // Cache full job details (with asset URLs) fetched on-demand per card,
   // since /my-jobs only returns lean metadata (no audio/epub/mindmap URLs).
@@ -68,9 +68,14 @@ export default function MyBooksPage() {
     setLoadingAction(key);
     try {
       const result = await resolveResult(job);
-      const summary = pickSummary(result, job.input?.language);
-      if (summary?.text) {
-        setSummaryModal({ title, text: summary.text });
+      if (result?.summaries && Object.keys(result.summaries).length > 0) {
+        const summariesList = Object.entries(result.summaries).map(([k, v]) => {
+           const lang = k.endsWith('_ar') ? 'ar' : 'en';
+           return { lang, text: v.text };
+        });
+        const prefLang = job.input?.language === 'ar' ? 'ar' : 'en';
+        const initLang = summariesList.find(s => s.lang === prefLang)?.lang || summariesList[0].lang;
+        setSummaryModal({ title, summaries: summariesList, activeLang: initLang });
       } else {
         alert(t('mybooks.asset_unavailable'));
       }
@@ -320,8 +325,28 @@ export default function MyBooksPage() {
                 <X size={18} />
               </button>
             </div>
-            <div className="px-6 py-4 overflow-y-auto text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-              {summaryModal.text}
+            {summaryModal.summaries.length > 1 && (
+              <div className="px-6 pt-4 flex gap-4 border-b border-gray-100 shrink-0">
+                {summaryModal.summaries.map(s => (
+                  <button
+                    key={s.lang}
+                    onClick={() => setSummaryModal(prev => prev ? { ...prev, activeLang: s.lang } : null)}
+                    className={`pb-3 px-1 text-sm font-semibold border-b-2 transition-colors ${
+                      summaryModal.activeLang === s.lang 
+                        ? 'border-black text-black' 
+                        : 'border-transparent text-gray-400 hover:text-gray-700'
+                    }`}
+                  >
+                    {s.lang === 'en' ? 'English' : s.lang === 'ar' ? 'العربية' : s.lang}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div 
+              className="px-6 py-4 overflow-y-auto text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"
+              dir={summaryModal.activeLang === 'ar' ? 'rtl' : 'ltr'}
+            >
+              {summaryModal.summaries.find(s => s.lang === summaryModal.activeLang)?.text}
             </div>
           </div>
         </div>
