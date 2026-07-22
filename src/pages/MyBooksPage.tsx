@@ -87,18 +87,20 @@ export default function MyBooksPage() {
     }
   }
 
-  async function handleAudio(job: PipelineJob) {
-    const key = `${job.id}:audio`;
-    if (playingAudio?.jobId === job.id) {
+  async function handleAudio(job: PipelineJob, isTranslated: boolean = false) {
+    const key = `${job.id}:audio${isTranslated ? '_trans' : ''}`;
+    if (playingAudio?.jobId === key) {
       setPlayingAudio(null);
       return;
     }
     setLoadingAction(key);
     try {
       const result = await resolveResult(job);
-      const audio = pickAudio(result, job.input?.language);
+      const sourceLang = job.input?.language || 'en';
+      const targetLang = isTranslated ? (sourceLang === 'ar' ? 'en' : 'ar') : sourceLang;
+      const audio = pickAudio(result, targetLang);
       if (audio?.url) {
-        setPlayingAudio({ jobId: job.id, url: audio.url });
+        setPlayingAudio({ jobId: key, url: audio.url });
       } else {
         alert(t('mybooks.asset_unavailable'));
       }
@@ -264,11 +266,20 @@ export default function MyBooksPage() {
                       )}
                       {job.input?.steps?.includes('audio_full') && (
                         <button
-                          onClick={() => handleAudio(job)}
+                          onClick={() => handleAudio(job, false)}
                           disabled={loadingAction === `${job.id}:audio`}
-                          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-colors text-xs font-semibold border disabled:opacity-50 ${isPlaying ? 'bg-purple-600 text-white border-purple-600' : 'bg-purple-50 text-purple-600 hover:bg-purple-100 border-purple-100'}`}
+                          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-colors text-xs font-semibold border disabled:opacity-50 ${playingAudio?.jobId === `${job.id}:audio` ? 'bg-purple-600 text-white border-purple-600' : 'bg-purple-50 text-purple-600 hover:bg-purple-100 border-purple-100'}`}
                         >
-                          {loadingAction === `${job.id}:audio` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio')}
+                          {loadingAction === `${job.id}:audio` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio', 'Audio')}
+                        </button>
+                      )}
+                      {(job.input?.steps?.includes('audio_full_translate') || (job.input?.steps?.includes('translate') && job.input?.steps?.includes('audio_full'))) && (
+                        <button
+                          onClick={() => handleAudio(job, true)}
+                          disabled={loadingAction === `${job.id}:audio_trans`}
+                          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg transition-colors text-xs font-semibold border disabled:opacity-50 ${playingAudio?.jobId === `${job.id}:audio_trans` ? 'bg-purple-600 text-white border-purple-600' : 'bg-purple-50 text-purple-600 hover:bg-purple-100 border-purple-100'}`}
+                        >
+                          {loadingAction === `${job.id}:audio_trans` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio_translated', 'Audio Translated')}
                         </button>
                       )}
                       {job.input?.steps?.includes('mindmap') && (

@@ -39,7 +39,11 @@ export default function ProcessingPage() {
   const getSelectedSteps = () => {
     const steps = ['summarize'];
     if (options.audio_full) steps.push('audio_full');
-    if (options.translate_ar) steps.push('translate');
+    if (options.translate_ar) {
+      steps.push('translate');
+      if (options.audio_full) steps.push('audio_full_translate');
+      if (options.mindmap) steps.push('mindmap_translate');
+    }
     if (options.mindmap) steps.push('mindmap');
     if (options.epub) steps.push('inject_epub');
     return steps;
