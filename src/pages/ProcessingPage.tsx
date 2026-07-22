@@ -12,9 +12,9 @@ export default function ProcessingPage() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'upload' | 'library' | 'youtube'>('upload');
 
-  // Pipeline Options
   const [options, setOptions] = useState({
     audio_full: true,
+    audio_full_translate: true,
     translate_ar: true,
     mindmap: true,
     epub: true,
@@ -41,7 +41,7 @@ export default function ProcessingPage() {
     if (options.audio_full) steps.push('audio_full');
     if (options.translate_ar) {
       steps.push('translate');
-      if (options.audio_full) steps.push('audio_full_translate');
+      if (options.audio_full_translate) steps.push('audio_full_translate');
       if (options.mindmap) steps.push('mindmap_translate');
     }
     if (options.mindmap) steps.push('mindmap');
@@ -226,6 +226,20 @@ export default function ProcessingPage() {
                   <p className="text-gray-500 text-xs">{t('processing.opt_translate_desc')}</p>
                 </div>
               </label>
+              {options.translate_ar && (
+                <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={options.audio_full_translate}
+                    onChange={(e) => setOptions({...options, audio_full_translate: e.target.checked})}
+                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                  />
+                  <div className="text-sm">
+                    <p className="font-medium text-gray-900">{t('processing.opt_audio_translate_title')}</p>
+                    <p className="text-gray-500 text-xs">{t('processing.opt_audio_translate_desc')}</p>
+                  </div>
+                </label>
+              )}
               <label className="flex items-center gap-3 p-4 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                 <input
                   type="checkbox"

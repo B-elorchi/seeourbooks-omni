@@ -273,7 +273,7 @@ export default function MyBooksPage() {
                           {loadingAction === `${job.id}:audio` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio', 'Audio')}
                         </button>
                       )}
-                      {(job.input?.steps?.includes('audio_full_translate') || (job.input?.steps?.includes('translate') && job.input?.steps?.includes('audio_full'))) && (
+                      {job.input?.steps?.includes('audio_full_translate') && (
                         <button
                           onClick={() => handleAudio(job, true)}
                           disabled={loadingAction === `${job.id}:audio_trans`}
