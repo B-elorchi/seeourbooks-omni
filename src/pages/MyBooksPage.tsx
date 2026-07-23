@@ -206,7 +206,7 @@ export default function MyBooksPage() {
               estTimeStr = `${startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - ${endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
             }
 
-            const isPlaying = playingAudio?.jobId === job.id;
+            const isPlaying = playingAudio?.jobId === `${job.id}:audio` || playingAudio?.jobId === `${job.id}:audio_trans`;
 
             return (
             <div key={job.id} className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
