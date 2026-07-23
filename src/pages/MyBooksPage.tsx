@@ -264,7 +264,7 @@ export default function MyBooksPage() {
                           {loadingAction === `${job.id}:summary` ? <Loader2 className="animate-spin" size={14} /> : <Book size={14} />} {t('common.summary')}
                         </button>
                       )}
-                      {job.input?.steps?.includes('audio_full') && (
+                      {job.input?.steps?.includes('audio_full') && job.result?.steps?.['audio_full'] === 'done' && (
                         <button
                           onClick={() => handleAudio(job, false)}
                           disabled={loadingAction === `${job.id}:audio`}
@@ -273,7 +273,7 @@ export default function MyBooksPage() {
                           {loadingAction === `${job.id}:audio` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio', 'Audio')}
                         </button>
                       )}
-                      {job.input?.steps?.includes('audio_full_translate') && (
+                      {job.input?.steps?.includes('audio_full_translate') && job.result?.steps?.['audio_full_translate'] === 'done' && (
                         <button
                           onClick={() => handleAudio(job, true)}
                           disabled={loadingAction === `${job.id}:audio_trans`}
@@ -282,7 +282,7 @@ export default function MyBooksPage() {
                           {loadingAction === `${job.id}:audio_trans` ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} fill="currentColor" />} {t('common.audio_translated', 'Audio Translated')}
                         </button>
                       )}
-                      {job.input?.steps?.includes('mindmap') && (
+                      {job.input?.steps?.includes('mindmap') && job.result?.steps?.['mindmap'] === 'done' && (
                         <button
                           onClick={() => handleMindmap(job)}
                           disabled={loadingAction === `${job.id}:mindmap`}
@@ -291,7 +291,7 @@ export default function MyBooksPage() {
                           {loadingAction === `${job.id}:mindmap` ? <Loader2 className="animate-spin" size={14} /> : <Map size={14} />} {t('common.mindmap')}
                         </button>
                       )}
-                      {job.input?.steps?.includes('inject_epub') && (
+                      {job.input?.steps?.includes('inject_epub') && job.result?.steps?.['inject_epub'] === 'done' && (
                         <button
                           onClick={() => handleEpub(job, title)}
                           disabled={loadingAction === `${job.id}:epub`}
